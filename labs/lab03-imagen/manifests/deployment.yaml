@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: taskflow-api
-          # TODO (lab03): imagen productiva publicada en el lab03, ej. :lab03
-          image: "TODO"
+          # SOLUCIÓN (lab03): imagen productiva publicada en este lab.
+          image: "image-registry.openshift-image-registry.svc:5000/tu-namespace/taskflow-api:lab03"
           ports:
             - containerPort: 8080
           envFrom:
@@ -36,21 +36,21 @@ spec:
                   key: password
           securityContext:
             readOnlyRootFilesystem: true
-            # TODO (lab03): completar el resto del hardening.
-            runAsNonRoot: TODO
-            allowPrivilegeEscalation: TODO
+            # SOLUCIÓN (lab03): hardening completo.
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
             capabilities:
-              drop: ["TODO"]
+              drop: ["ALL"]
             seccompProfile:
-              type: TODO
+              type: RuntimeDefault
           resources:
-            # TODO (lab03): valores livianos acordes a un lab.
+            # SOLUCIÓN (lab03): valores livianos acordes a un lab.
             requests:
-              cpu: "TODO"
-              memory: "TODO"
+              cpu: "100m"
+              memory: "128Mi"
             limits:
-              cpu: "TODO"
-              memory: "TODO"
+              cpu: "500m"
+              memory: "256Mi"
           volumeMounts:
             - name: tmp
               mountPath: /tmp

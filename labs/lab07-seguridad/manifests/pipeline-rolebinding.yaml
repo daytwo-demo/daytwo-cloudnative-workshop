@@ -4,8 +4,8 @@ metadata:
   name: pipeline-deployer
 subjects:
   - kind: ServiceAccount
-    # TODO (lab07): la SA que usa el PipelineRun del lab04.
-    name: TODO
+    # SOLUCIÓN (lab07): la SA que usa el PipelineRun del lab04.
+    name: pipeline
 roleRef:
   kind: Role
   name: pipeline-deployer

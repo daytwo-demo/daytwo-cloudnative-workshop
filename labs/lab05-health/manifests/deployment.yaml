@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: taskflow-api
-          image: "TODO"
+          image: "image-registry.openshift-image-registry.svc:5000/tu-namespace/taskflow-api:lab04"
           ports:
             - containerPort: 8080
           envFrom:
@@ -33,25 +33,25 @@ spec:
                 secretKeyRef:
                   name: taskflow-db-credentials
                   key: password
-          # TODO (lab05): completar los tres probes.
+          # SOLUCIÓN (lab05): los tres probes cableados.
           startupProbe:
             httpGet:
               path: /startupz
-              port: TODO
-            failureThreshold: TODO
-            periodSeconds: TODO
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /healthz
-              port: TODO
-            periodSeconds: TODO
-            failureThreshold: TODO
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /readyz
-              port: TODO
-            periodSeconds: TODO
-            failureThreshold: TODO
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true

@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: taskflow-api
+spec:
+  # SOLUCIÓN (lab01): Service de destino, con TLS edge habilitado.
+  to:
+    kind: Service
+    name: taskflow-api
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

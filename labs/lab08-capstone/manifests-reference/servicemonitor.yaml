@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: taskflow-api
+  labels:
+    app: taskflow-api
+spec:
+  selector:
+    matchLabels:
+      # SOLUCIÓN (lab06): debe coincidir con las labels del Service.
+      app: taskflow-api
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

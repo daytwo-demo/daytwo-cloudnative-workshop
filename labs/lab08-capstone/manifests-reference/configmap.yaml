@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taskflow-config
+data:
+  # SOLUCIÓN (lab02): nombre del Service de PostgreSQL (ver postgres-service.yaml)
+  Db__Host: "taskflow-db"
+  Db__Port: "5432"
+  Db__Name: "taskflow"
+
+  # OpenTelemetry sigue a nivel demo: "console" imprime spans en el log
+  # del pod, "none" apaga el exporter sin dejar de instrumentar.
+  Otel__Exporter: "console"

@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pipeline-deployer
+rules:
+  # SOLUCIÓN (lab07): mínimo privilegio, solo lo que "deploy" en el
+  # pipeline del lab04 necesita hacer. "get"+"patch" alcanzan para
+  # `oc set image`, pero `oc rollout status` además hace un watch (list+
+  # watch) para esperar a que el rollout termine: sin esos dos verbos
+  # falla con "cannot list resource deployments", aunque la imagen ya se
+  # haya actualizado bien.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments/status"]
+    verbs: ["get"]

@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: taskflow-api-allow-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: taskflow-api
+  policyTypes: ["Ingress"]
+  ingress:
+    # SOLUCIÓN (lab07): solo el router de OpenShift llega al puerto 8080.
+    # "policy-group.network.openshift.io/ingress" es la label estándar que
+    # OpenShift mantiene en el namespace del router, no depende de su
+    # nombre real (openshift-ingress) ni del plugin de red (SDN/OVN-K).
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              policy-group.network.openshift.io/ingress: ""
+      ports:
+        - protocol: TCP
+          port: 8080
+    # SOLUCIÓN (lab07): sin esta regla, el ServiceMonitor del lab06 deja de
+    # scrapear en cuanto se aplica esta NetworkPolicy: confirmado en el
+    # target de Prometheus ("context deadline exceeded") hasta agregar este
+    # ingress. La label real de los namespaces de monitoreo es
+    # "network.openshift.io/policy-group: monitoring" (distinta, en formato
+    # y valor, de la del router de arriba).
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: taskflow-db-allow-from-api
+spec:
+  podSelector:
+    matchLabels:
+      app: taskflow-db
+  policyTypes: ["Ingress"]
+  ingress:
+    # SOLUCIÓN (lab07): solo el pod de la API llega al puerto 5432.
+    - from:
+        - podSelector:
+            matchLabels:
+              app: taskflow-api
+      ports:
+        - protocol: TCP
+          port: 5432

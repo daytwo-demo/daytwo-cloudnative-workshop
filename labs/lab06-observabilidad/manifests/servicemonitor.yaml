@@ -7,9 +7,9 @@ metadata:
 spec:
   selector:
     matchLabels:
-      # TODO (lab06): debe coincidir con las labels del Service, no del Pod.
-      app: TODO
+      # SOLUCIÓN (lab06): debe coincidir con las labels del Service.
+      app: taskflow-api
   endpoints:
-    - port: TODO
+    - port: http
       path: /metrics
       interval: 30s

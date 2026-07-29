@@ -3,10 +3,10 @@ kind: Route
 metadata:
   name: taskflow-api
 spec:
-  # TODO (lab01): completar el Service de destino y habilitar TLS edge.
+  # SOLUCIÓN (lab01): Service de destino, con TLS edge habilitado.
   to:
     kind: Service
-    name: TODO
+    name: taskflow-api
   port:
     targetPort: http
   tls:

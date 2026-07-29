@@ -16,23 +16,24 @@ spec:
     spec:
       containers:
         - name: taskflow-api
-          # TODO (lab01): imagen publicada en el registry interno, ej.
-          # image-registry.openshift-image-registry.svc:5000/<tu-namespace>/taskflow-api:lab01
-          image: "TODO"
+          # SOLUCIÓN (lab01): imagen publicada en el registry interno.
+          # "tu-namespace" es un placeholder: reemplazarlo por el tuyo
+          # real (el que devuelve "oc project -q").
+          image: "image-registry.openshift-image-registry.svc:5000/tu-namespace/taskflow-api:lab01"
           ports:
             - containerPort: 8080
 
-        # TODO (lab01): sidecar de PostgreSQL para que "localhost" (la
+        # SOLUCIÓN (lab01): sidecar de PostgreSQL para que "localhost" (la
         # connection string hardcodeada de la app) resuelva dentro del Pod.
         # Se reemplaza por un Deployment separado en el lab02.
         - name: postgres
-          image: "image-registry.openshift-image-registry.svc:5000/openshift/postgresql:15-el9"
+          image: "registry.redhat.io/rhel9/postgresql-16:latest"
           ports:
             - containerPort: 5432
           env:
             - name: POSTGRESQL_DATABASE
-              value: "TODO"
+              value: "taskflow"
             - name: POSTGRESQL_USER
-              value: "TODO"
+              value: "taskflow"
             - name: POSTGRESQL_PASSWORD
-              value: "TODO"
+              value: "TaskFlow!2024"

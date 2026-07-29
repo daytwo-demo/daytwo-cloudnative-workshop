@@ -4,22 +4,18 @@ API REST en ASP.NET Core (.NET 10 LTS) para gestión de tareas. Es el hilo
 conductor de todo el workshop: cada laboratorio le agrega una dimensión
 Cloud Native.
 
-## Estado de este branch (`main`)
+## Estado de este branch (`solution`)
 
-Este es el estado **inicial**, deliberadamente no cloud-native, con el que
-arrancan los participantes:
+Este branch documenta cómo evoluciona TaskFlow lab a lab: cada commit
+aplica una capa (imagen, configuración, salud, observabilidad, seguridad)
+sobre el resultado del anterior. El `HEAD` de este branch integra las
+ocho capas completas.
 
-- Connection string de PostgreSQL **hardcodeada** en `appsettings.json` y en
-  `Program.cs` (`# TODO (lab02)`).
-- `Dockerfile` es un placeholder que no compila, el lab01 escribe uno real.
-- Sin liveness/readiness/startup probes en ningún manifiesto de Kubernetes
-  (los endpoints `/healthz`, `/readyz`, `/startupz` ya existen en el código;
-  falta cablearlos en un Deployment, eso es el lab05).
-- Sin manifiestos de Deployment/Service/Route todavía (lab01).
-- Corre como root por defecto al no tener imagen productiva (lab03).
-
-El estado completo, con las ocho capas aplicadas, vive en el branch
-`solution`: ver `labs/README.md` para el esquema de branches/tags.
+Para ver el estado en un punto puntual (sin adelantarse a labs
+posteriores) o el diff exacto que introdujo un lab, usar los tags
+`labNN-start`/`labNN-solution`: ver `labs/README.md` para el esquema
+completo. El branch `main` es el estado inicial, deliberadamente no
+cloud-native, con el que arrancan los participantes.
 
 ## Endpoints
 

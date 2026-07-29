@@ -7,6 +7,8 @@ spec:
     name: taskflow-build-deploy
   serviceAccountName: pipeline
   params:
+    # SOLUCIÓN (lab04): valores de referencia. Ajustar el pull spec de
+    # imagen a tu propio namespace (oc project -q).
     # git-revision usa el tag lab04-start (no main, que tiene el
     # Dockerfile de una sola etapa del lab01, no el productivo multi-stage
     # que este pipeline necesita): el pipeline construye el código de
@@ -16,7 +18,6 @@ spec:
     - name: git-revision
       value: lab04-start
     - name: image
-      # TODO (lab04): reemplazar tu-namespace por tu namespace (oc project -q)
       value: image-registry.openshift-image-registry.svc:5000/tu-namespace/taskflow-api:lab04
   # El LimitRange del namespace (tenant-limits) le da 500m/512Mi a
   # cualquier contenedor sin resources propios: insuficiente para un

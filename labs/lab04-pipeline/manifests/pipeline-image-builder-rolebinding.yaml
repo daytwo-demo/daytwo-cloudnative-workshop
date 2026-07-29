@@ -1,7 +1,7 @@
-# La ServiceAccount "pipeline" (creada por el operador de OpenShift
-# Pipelines) no trae por sí sola permiso para pushear al registry interno.
-# Sin este RoleBinding, el paso "build-and-push" falla en el push con
-# "authentication required".
+# SOLUCIÓN (lab04): la ServiceAccount "pipeline" (creada por el operador
+# de OpenShift Pipelines) no trae por sí sola permiso para pushear al
+# registry interno. Sin este RoleBinding, el paso "build-and-push" falla
+# en el push con "authentication required".
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

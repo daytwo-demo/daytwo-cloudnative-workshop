@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Npgsql;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -9,13 +10,6 @@ using Serilog;
 using Serilog.Formatting.Compact;
 using TaskFlow.Api.Data;
 using TaskFlow.Api.Models;
-
-// TODO (lab02): TaskFlow arranca con la connection string de la base de
-// datos hardcodeada en appsettings.json en vez de leerla de una variable de
-// entorno / Secret. El lab02 la externaliza a ConfigMap + Secret y esta
-// constante deja de usarse.
-const string HardcodedConnectionString =
-    "Host=localhost;Port=5432;Database=taskflow;Username=taskflow;Password=TaskFlow!2024";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -33,13 +27,25 @@ try
         .Enrich.FromLogContext()
         .WriteTo.Console(new CompactJsonFormatter()));
 
+    // SOLUCIÓN (lab02): connection string construida desde configuración
+    // (ConfigMap para host/puerto/nombre, Secret para usuario/password) en
+    // vez de un valor hardcodeado.
+    var connectionString = new NpgsqlConnectionStringBuilder
+    {
+        Host = builder.Configuration["Db:Host"] ?? "localhost",
+        Port = int.Parse(builder.Configuration["Db:Port"] ?? "5432"),
+        Database = builder.Configuration["Db:Name"] ?? "taskflow",
+        Username = builder.Configuration["Db:Username"] ?? "taskflow",
+        Password = builder.Configuration["Db:Password"] ?? ""
+    }.ConnectionString;
+
     builder.Services.AddDbContext<TaskFlowDbContext>(options =>
-        options.UseNpgsql(HardcodedConnectionString));
+        options.UseNpgsql(connectionString));
 
     builder.Services.AddHealthChecks()
         // "ready" verifica conexión real a la base: si Postgres no responde,
         // el pod deja de recibir tráfico sin reiniciarse.
-        .AddNpgSql(HardcodedConnectionString, name: "postgres", tags: ["ready"])
+        .AddNpgSql(connectionString, name: "postgres", tags: ["ready"])
         // "live"/"startup" son checks de proceso: si el runtime .NET responde,
         // el proceso está vivo. No dependen de la base a propósito.
         .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live", "startup"]);

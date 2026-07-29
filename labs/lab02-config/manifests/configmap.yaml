@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: taskflow-config
 data:
-  # TODO (lab02): nombre del Service de PostgreSQL (ver postgres-service.yaml)
-  Db__Host: "TODO"
+  # SOLUCIÓN (lab02): nombre del Service de PostgreSQL (ver postgres-service.yaml)
+  Db__Host: "taskflow-db"
   Db__Port: "5432"
   Db__Name: "taskflow"
 

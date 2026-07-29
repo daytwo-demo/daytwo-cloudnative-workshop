@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
         - name: taskflow-api
-          # TODO (lab02): imagen reconstruida en el paso 2 (tag lab02, no
-          # lab01 -- el Program.cs cambió), ya sin sidecar de Postgres.
-          image: "TODO"
+          # SOLUCIÓN (lab02): imagen reconstruida en el paso 2 (tag lab02,
+          # no lab01), ya sin sidecar de Postgres.
+          image: "image-registry.openshift-image-registry.svc:5000/tu-namespace/taskflow-api:lab02"
           ports:
             - containerPort: 8080
           envFrom:

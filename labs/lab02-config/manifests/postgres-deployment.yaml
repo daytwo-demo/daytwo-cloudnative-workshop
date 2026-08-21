@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskflow-db
+  labels:
+    app: taskflow-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskflow-db
+  template:
+    metadata:
+      labels:
+        app: taskflow-db
+    spec:
+      containers:
+        - name: postgres
+          image: "image-registry.openshift-image-registry.svc:5000/openshift/postgresql:15-el9"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: taskflow-config
+                  key: Db__Name
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: username
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        # Almacenamiento efímero a propósito: fuera de alcance para este
+        # workshop. En un entorno real, esto es un PersistentVolumeClaim.
+        - name: data
+          emptyDir: {}

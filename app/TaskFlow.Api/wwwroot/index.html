@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>TaskFlow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  form { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+  input[type=text] { flex: 1; padding: 0.4rem; }
+  button { padding: 0.4rem 0.8rem; cursor: pointer; }
+  ul { list-style: none; padding: 0; }
+  li { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+  li.done span.title { text-decoration: line-through; opacity: 0.6; }
+  li span.title { flex: 1; }
+  li button { background: none; border: none; font-size: 1.1rem; }
+  #error { color: #c0392b; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+  <h1>TaskFlow</h1>
+  <form id="new-task">
+    <input type="text" id="title" placeholder="Título de la tarea" required>
+    <button type="submit">Agregar</button>
+  </form>
+  <p id="error"></p>
+  <ul id="tasks"></ul>
+
+<script>
+const api = "/api/tasks";
+const list = document.getElementById("tasks");
+const errorBox = document.getElementById("error");
+
+function showError(msg) { errorBox.textContent = msg; }
+
+async function loadTasks() {
+  showError("");
+  try {
+    const res = await fetch(api);
+    if (!res.ok) throw new Error(`GET ${api} -> ${res.status}`);
+    const tasks = await res.json();
+    render(tasks);
+  } catch (err) {
+    showError(`No se pudo cargar la lista: ${err.message}`);
+  }
+}
+
+function render(tasks) {
+  list.innerHTML = "";
+  for (const task of tasks) {
+    const li = document.createElement("li");
+    li.className = task.isDone ? "done" : "";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.isDone;
+    checkbox.addEventListener("change", () => toggleDone(task));
+
+    const title = document.createElement("span");
+    title.className = "title";
+    title.textContent = task.title;
+
+    const del = document.createElement("button");
+    del.textContent = "✕";
+    del.title = "Eliminar";
+    del.addEventListener("click", () => deleteTask(task.id));
+
+    li.append(checkbox, title, del);
+    list.appendChild(li);
+  }
+}
+
+async function toggleDone(task) {
+  showError("");
+  try {
+    const res = await fetch(`${api}/${task.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...task, isDone: !task.isDone }),
+    });
+    if (!res.ok) throw new Error(`PUT ${api}/${task.id} -> ${res.status}`);
+    await loadTasks();
+  } catch (err) {
+    showError(`No se pudo actualizar la tarea: ${err.message}`);
+  }
+}
+
+async function deleteTask(id) {
+  showError("");
+  try {
+    const res = await fetch(`${api}/${id}`, { method: "DELETE" });
+    if (!res.ok) throw new Error(`DELETE ${api}/${id} -> ${res.status}`);
+    await loadTasks();
+  } catch (err) {
+    showError(`No se pudo eliminar la tarea: ${err.message}`);
+  }
+}
+
+document.getElementById("new-task").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const input = document.getElementById("title");
+  const title = input.value.trim();
+  if (!title) return;
+  showError("");
+  try {
+    const res = await fetch(api, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, isDone: false }),
+    });
+    if (!res.ok) throw new Error(`POST ${api} -> ${res.status}`);
+    input.value = "";
+    await loadTasks();
+  } catch (err) {
+    showError(`No se pudo crear la tarea: ${err.message}`);
+  }
+});
+
+loadTasks();
+</script>
+</body>
+</html>

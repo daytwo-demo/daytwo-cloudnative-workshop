@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pipeline-deployer
+rules:
+  # TODO (lab07): mínimo privilegio, solo lo que "deploy" en el pipeline
+  # del lab04 necesita hacer: "oc set image" (get+patch) y "oc rollout
+  # status" (list+watch, porque espera el resultado con un watch, no con
+  # una lectura puntual).
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["TODO"]
+  - apiGroups: ["apps"]
+    resources: ["deployments/status"]
+    verbs: ["get"]

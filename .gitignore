@@ -1,0 +1,17 @@
+# .NET
+app/**/bin/
+app/**/obj/
+*.user
+
+# Sistema operativo / editores
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Credenciales locales, nunca commitear
+.env
+
+# Notas de trabajo de Claude Code para este repo, no es documentación
+# oficial del proyecto, no se commitea.
+CLAUDE.md

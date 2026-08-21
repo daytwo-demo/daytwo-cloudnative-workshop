@@ -1,0 +1,64 @@
+# Pipeline provisto por el instructor: no se construye en este lab, se
+# dispara y se lee. Ver labs/lab04-pipeline/README.md.
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: taskflow-build-deploy
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+      default: main
+    - name: image
+      type: string
+      description: Pull spec completo del ImageStream interno destino
+
+  workspaces:
+    - name: shared-workspace
+
+  tasks:
+    - name: fetch-repo
+      taskRef:
+        resolver: cluster
+        params:
+          - { name: kind, value: task }
+          - { name: name, value: git-clone }
+          - { name: namespace, value: openshift-pipelines }
+      workspaces:
+        - { name: output, workspace: shared-workspace }
+      params:
+        - { name: URL, value: $(params.git-url) }
+        - { name: REVISION, value: $(params.git-revision) }
+
+    - name: build-and-push
+      runAfter: ["fetch-repo"]
+      taskRef:
+        resolver: cluster
+        params:
+          - { name: kind, value: task }
+          - { name: name, value: buildah }
+          - { name: namespace, value: openshift-pipelines }
+      workspaces:
+        - { name: source, workspace: shared-workspace }
+      params:
+        - { name: IMAGE, value: $(params.image) }
+        - { name: DOCKERFILE, value: ./app/Dockerfile }
+        - { name: CONTEXT, value: ./app }
+
+    - name: deploy
+      runAfter: ["build-and-push"]
+      taskRef:
+        resolver: cluster
+        params:
+          - { name: kind, value: task }
+          - { name: name, value: openshift-client }
+          - { name: namespace, value: openshift-pipelines }
+      workspaces:
+        - { name: manifest_dir, workspace: shared-workspace }
+      params:
+        - name: SCRIPT
+          value: |
+            oc set image deployment/taskflow-api taskflow-api=$(params.image)
+            oc rollout status deployment/taskflow-api --timeout=120s

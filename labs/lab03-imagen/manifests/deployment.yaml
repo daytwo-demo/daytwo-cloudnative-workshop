@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskflow-api
+  labels:
+    app: taskflow-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskflow-api
+  template:
+    metadata:
+      labels:
+        app: taskflow-api
+    spec:
+      containers:
+        - name: taskflow-api
+          # TODO (lab03): imagen productiva publicada en el lab03, ej. :lab03
+          image: "TODO"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: taskflow-config
+          env:
+            - name: Db__Username
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: username
+            - name: Db__Password
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: password
+          securityContext:
+            readOnlyRootFilesystem: true
+            # TODO (lab03): completar el resto del hardening.
+            runAsNonRoot: TODO
+            allowPrivilegeEscalation: TODO
+            capabilities:
+              drop: ["TODO"]
+            seccompProfile:
+              type: TODO
+          resources:
+            # TODO (lab03): valores livianos acordes a un lab.
+            requests:
+              cpu: "TODO"
+              memory: "TODO"
+            limits:
+              cpu: "TODO"
+              memory: "TODO"
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

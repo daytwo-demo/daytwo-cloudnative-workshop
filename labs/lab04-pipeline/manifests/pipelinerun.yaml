@@ -1,0 +1,43 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: taskflow-build-deploy-run
+spec:
+  pipelineRef:
+    name: taskflow-build-deploy
+  serviceAccountName: pipeline
+  params:
+    # git-revision usa el tag lab04-start (no main, que todavía no tiene
+    # Dockerfile real): el pipeline construye el código de referencia,
+    # no tus propios cambios locales: ver README de este lab.
+    - name: git-url
+      value: https://github.com/daytwo-demo/daytwo-cloudnative-workshop.git
+    - name: git-revision
+      value: lab04-start
+    - name: image
+      # TODO (lab04): reemplazar <namespace> por tu namespace (oc project -q)
+      value: image-registry.openshift-image-registry.svc:5000/<namespace>/taskflow-api:lab04
+  # El LimitRange del namespace (tenant-limits) le da 500m/512Mi a
+  # cualquier contenedor sin resources propios: insuficiente para un
+  # "dotnet restore"+"publish" real dentro del step "build" de la Task
+  # buildah, que si no queda casi colgado por GC pressure. Se sube acá,
+  # no en el Task (que es compartido/gestionado por el operador).
+  taskRunSpecs:
+    - pipelineTaskName: build-and-push
+      stepSpecs:
+        - name: build
+          computeResources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1536Mi"
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Gi

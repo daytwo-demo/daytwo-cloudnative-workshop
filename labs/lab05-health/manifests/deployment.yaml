@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskflow-api
+  labels:
+    app: taskflow-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskflow-api
+  template:
+    metadata:
+      labels:
+        app: taskflow-api
+    spec:
+      containers:
+        - name: taskflow-api
+          image: "TODO"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: taskflow-config
+          env:
+            - name: Db__Username
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: username
+            - name: Db__Password
+              valueFrom:
+                secretKeyRef:
+                  name: taskflow-db-credentials
+                  key: password
+          # TODO (lab05): completar los tres probes.
+          startupProbe:
+            httpGet:
+              path: /startupz
+              port: TODO
+            failureThreshold: TODO
+            periodSeconds: TODO
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: TODO
+            periodSeconds: TODO
+            failureThreshold: TODO
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: TODO
+            periodSeconds: TODO
+            failureThreshold: TODO
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

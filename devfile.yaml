@@ -1,0 +1,58 @@
+schemaVersion: 2.2.0
+metadata:
+  name: taskflow-workshop
+
+components:
+  - name: dotnet
+    attributes:
+      pod-overrides:
+        spec:
+          securityContext:
+            fsGroup: 0
+      container-overrides:
+        securityContext:
+          privileged: true
+          allowPrivilegeEscalation: true
+          runAsNonRoot: true
+          runAsUser: 1000
+    container:
+      image: quay.io/daytwo/cloudnative-workshop-devtools:10.0
+      command: ["tail", "-f", "/dev/null"]
+      memoryLimit: 2Gi
+      mountSources: true
+      endpoints:
+        - name: taskflow-api
+          targetPort: 8080
+          exposure: public
+          protocol: https
+
+  - name: postgres
+    container:
+      image: registry.redhat.io/rhel9/postgresql-16:latest
+      memoryLimit: 512Mi
+      env:
+        - name: POSTGRESQL_DATABASE
+          value: taskflow
+        - name: POSTGRESQL_USER
+          value: taskflow
+        - name: POSTGRESQL_PASSWORD
+          value: "TaskFlow!2024"
+
+commands:
+  - id: build
+    exec:
+      component: dotnet
+      commandLine: dotnet build
+      workingDir: ${PROJECT_SOURCE}/app
+
+  - id: run
+    exec:
+      component: dotnet
+      commandLine: dotnet run --project app/TaskFlow.Api
+      workingDir: ${PROJECT_SOURCE}
+
+  - id: test
+    exec:
+      component: dotnet
+      commandLine: dotnet test
+      workingDir: ${PROJECT_SOURCE}/app

@@ -60,7 +60,7 @@ máquina local:
    Dev Spaces, sin permisos sobre tu namespace (`<tu-usuario>`): hace
    falta un login explícito:
    ```bash
-   oc login https://api.workshop.bg.daytwodemo.com:6443 -u <tu-usuario> -p <tu-password>
+   oc login https://api.workshop.bg.daytwodemo.com:6443 -u <tu-usuario>
    ```
    El API server usa un certificado autofirmado: cuando pregunte
    `Use insecure connections? (y/n)`, responder `y`. Confirmar con
@@ -76,9 +76,25 @@ máquina local:
    imagen: si el `NS` que usan los comandos de cada lab termina en
    `-devspaces`, la imagen queda etiquetada en el `ImageStream`
    equivocado, y el `Deployment` del lab no la va a encontrar.
-6. Un solo workspace alcanza para toda la semana, no crear uno nuevo por
+6. **Correr TaskFlow local, antes de tocar ningún lab.** Desde la raíz del
+   repo:
+   ```bash
+   dotnet run --project app/TaskFlow.Api
+   ```
+   Tiene que arrancar sin error de conexión: el Postgres del devfile ya
+   corre en el mismo Pod que la terminal, en `localhost:5432`, con las
+   credenciales que la app espera. Confirmar en otra terminal (ícono `+`
+   del panel):
+   ```bash
+   curl -s http://localhost:8080/api/tasks
+   ```
+   Tiene que devolver `[]`. `Ctrl+C` en la primera terminal para parar el
+   proceso antes de seguir. El lab01 va a contrastar esto explícitamente
+   contra lo que pasa al correr la misma app dentro de un contenedor con
+   `podman run`, así que vale la pena confirmarlo ahora.
+7. Un solo workspace alcanza para toda la semana, no crear uno nuevo por
    lab.
-7. **Activar el preview de Markdown** para leer estos README cómodos:
+8. **Activar el preview de Markdown** para leer estos README cómodos:
    che-code trae el editor de VS Code, que ya incluye el preview nativo,
    no hace falta instalar ninguna extensión. Con el archivo abierto,
    `Ctrl+Shift+V` (o el ícono de la lupa con hoja arriba a la derecha del

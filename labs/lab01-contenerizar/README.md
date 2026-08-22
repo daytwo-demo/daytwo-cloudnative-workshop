@@ -219,7 +219,7 @@ resolver acá, es para leer, construir y correr.
 
    Esta vez sí va a fallar al conectar a Postgres (`EnsureCreated()` tira
    una excepción de conexión), a diferencia de cuando corriste
-   `dotnet run --project TaskFlow.Api` directo en la terminal (Paso 0 de
+   `dotnet run --project app/TaskFlow.Api` directo en la terminal (Paso 0 de
    `labs/README.md`). La diferencia no es casualidad: `dotnet run`
    arranca un *proceso* dentro del mismo contenedor de la terminal, que
    comparte el namespace de red del Pod con el sidecar de Postgres del

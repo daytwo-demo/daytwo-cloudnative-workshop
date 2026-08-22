@@ -59,21 +59,28 @@ a nivel de OpenShift.
    confirmar que el pod de la API vuelve a los `Endpoints` sin haberse
    reiniciado nunca.
 
-5. **Provocar un fallo de *liveness*.** Entrar al contenedor y matar el
-   proceso principal:
+5. **Provocar una terminación real del proceso.** Entrar al contenedor y
+   matar el proceso principal:
    ```bash
    oc exec deploy/taskflow-api -- kill 1
    ```
-   Esta vez sí: `oc get pods` va a mostrar un `RESTARTS` incrementado:
-   el proceso murió, la liveness probe lo detecta, y Kubernetes reinicia
-   el contenedor.
+   `oc get pods` va a mostrar un `RESTARTS` incrementado, pero la razón es
+   distinta a la del paso anterior: `kill` sin señal explícita manda
+   `SIGTERM`, que el Generic Host de ASP.NET Core intercepta para hacer un
+   *shutdown* ordenado (drena conexiones, sale con código 0). El proceso ya
+   no existe cuando terminaría de correr el próximo probe: no es la
+   liveness probe la que "detecta" esto, es el `restartPolicy: Always` del
+   Deployment reaccionando a que el contenedor terminó de verdad. A
+   diferencia del paso 3, acá sí hubo una terminación real del proceso, no
+   una condición transitoria detectada por una probe.
 
 ## Criterios de "hecho"
 
 - [ ] Los tres probes están definidos y usan los endpoints correctos.
 - [ ] Se observó (no solo se leyó) que un fallo de readiness saca el pod
       de `Endpoints` sin reiniciarlo.
-- [ ] Se observó que un fallo de liveness sí reinicia el contenedor.
+- [ ] Se observó que una terminación real del proceso sí reinicia el
+      contenedor, a diferencia de un fallo de readiness.
 - [ ] El equipo puede explicar por qué `/healthz` deliberadamente no
       depende de la base de datos.
 

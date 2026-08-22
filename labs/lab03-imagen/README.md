@@ -97,7 +97,7 @@ línea del Dockerfile: se verifica en el lab07.
    `podman` ya lo tienes de antes, no hace falta repetirlo):
    ```bash
    REGISTRY=default-route-openshift-image-registry.apps.workshop.bg.daytwodemo.com
-   NS=$(oc project -q)          # tu namespace actual (dev-<tu-usuario>)
+   NS=$(oc project -q)          # tu namespace actual (<tu-usuario>)
 
    podman build -t $REGISTRY/$NS/taskflow-api:lab03 \
      -f app/Dockerfile app

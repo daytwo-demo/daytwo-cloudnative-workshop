@@ -125,7 +125,7 @@ dolor de la config hardcodeada antes de resolverlo formalmente mañana.
 
    ```bash
    REGISTRY=default-route-openshift-image-registry.apps.workshop.bg.daytwodemo.com
-   NS=$(oc project -q)          # tu namespace actual (dev-<tu-usuario>)
+   NS=$(oc project -q)          # tu namespace actual (<tu-usuario>)
    USUARIO=$(oc whoami)         # tu usuario de OpenShift
    TOKEN=$(oc whoami -t)        # tu token de autenticación, hace de password
 

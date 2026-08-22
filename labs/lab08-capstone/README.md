@@ -26,7 +26,7 @@ oc new-project taskflow-capstone-<equipo>
 ```
 
 (o el namespace que indique el instructor, no reutilizar tu
-`dev-<usuario>` de los labs anteriores).
+`<usuario>` de los labs anteriores).
 
 ## Checklist de integración
 

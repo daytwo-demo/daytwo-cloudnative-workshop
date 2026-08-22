@@ -57,7 +57,7 @@ máquina local:
    instalar nada a mano.
 4. **Loguearse con `oc` como tú mismo.** La terminal del workspace
    arranca autenticada como una cuenta de servicio interna del propio
-   Dev Spaces, sin permisos sobre tu namespace (`dev-<tu-usuario>`): hace
+   Dev Spaces, sin permisos sobre tu namespace (`<tu-usuario>`): hace
    falta un login explícito:
    ```bash
    oc login https://api.workshop.bg.daytwodemo.com:6443 -u <tu-usuario> -p <tu-password>
@@ -66,13 +66,13 @@ máquina local:
    `Use insecure connections? (y/n)`, responder `y`. Confirmar con
    `oc whoami` que devuelve tu usuario, no un `system:serviceaccount:...`.
 5. **Pararte en tu namespace de aplicación, explícitamente.** Tu usuario
-   tiene acceso a dos namespaces (`dev-<tu-usuario>`, donde van los labs,
+   tiene acceso a dos namespaces (`<tu-usuario>`, donde van los labs,
    y `<tu-usuario>-devspaces`, el del propio workspace de Dev Spaces): el
    login no elige el correcto automáticamente.
    ```bash
-   oc project dev-<tu-usuario>
+   oc project <tu-usuario>
    ```
-   Confirmá con `oc project -q` antes de construir o publicar ninguna
+   Confirma con `oc project -q` antes de construir o publicar ninguna
    imagen: si el `NS` que usan los comandos de cada lab termina en
    `-devspaces`, la imagen queda etiquetada en el `ImageStream`
    equivocado, y el `Deployment` del lab no la va a encontrar.

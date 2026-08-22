@@ -13,7 +13,7 @@ segmentación real entre los componentes de TaskFlow.
 
 ## Contexto
 
-Tu namespace (`dev-<tu-usuario>`) ya tiene, desde el aprovisionamiento
+Tu namespace (`<tu-usuario>`) ya tiene, desde el aprovisionamiento
 inicial del workshop, una `NetworkPolicy` base que niega todo el tráfico
 por defecto. Hasta ahora la app funcionó
 igual porque esa política solo bloquea tráfico *entrante desde otros

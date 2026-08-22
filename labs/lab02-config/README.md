@@ -69,7 +69,7 @@ realmente stateless, no solo la ausencia de un valor hardcodeado.
    falta repetirlo.
    ```bash
    REGISTRY=default-route-openshift-image-registry.apps.workshop.bg.daytwodemo.com
-   NS=$(oc project -q)          # tu namespace actual (dev-<tu-usuario>)
+   NS=$(oc project -q)          # tu namespace actual (<tu-usuario>)
 
    podman build -t $REGISTRY/$NS/taskflow-api:lab02 \
      -f app/Dockerfile app

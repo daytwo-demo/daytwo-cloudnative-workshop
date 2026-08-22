@@ -130,8 +130,9 @@ resolver acá, es para leer, construir y correr.
    podman build -t hello-api:una-etapa -f Dockerfile.una-etapa .
    podman images hello-api:una-etapa   # anotar el tamaño
 
-   podman run --rm -p 8080:8080 hello-api:una-etapa &
+   podman run --rm --detach --name hello-api-test -p 8080:8080 hello-api:una-etapa
    curl http://localhost:8080/
+   podman stop hello-api-test
    ```
 
 2. **Leer y construir la versión multi-stage** (`hello-api/Dockerfile`):

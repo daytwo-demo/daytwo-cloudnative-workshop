@@ -1,0 +1,13 @@
+# Una sola etapa: compila y corre con la misma imagen (el SDK completo de
+# .NET). No es la versión que se publica de verdad -- ver "Dockerfile"
+# (multi-stage) para eso. Este archivo existe solo para comparar tamaños
+# de imagen en el paso 1 del lab01.
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /src
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet publish -c Release -o /app/publish --no-restore
+WORKDIR /app/publish
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "HelloApi.dll"]

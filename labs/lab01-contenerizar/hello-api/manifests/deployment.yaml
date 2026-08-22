@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-api
+  labels:
+    app: hello-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-api
+  template:
+    metadata:
+      labels:
+        app: hello-api
+    spec:
+      containers:
+        - name: hello-api
+          # "tu-namespace" es un placeholder: reemplazarlo por el tuyo
+          # real (el que devuelve "oc project -q").
+          image: "image-registry.openshift-image-registry.svc:5000/tu-namespace/hello-api:multi-stage"
+          ports:
+            - containerPort: 8080

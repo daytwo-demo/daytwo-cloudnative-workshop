@@ -1,6 +1,6 @@
 # .NET
-app/**/bin/
-app/**/obj/
+**/bin/
+**/obj/
 *.user
 
 # Sistema operativo / editores

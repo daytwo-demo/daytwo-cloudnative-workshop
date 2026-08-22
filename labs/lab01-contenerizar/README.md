@@ -134,6 +134,13 @@ resolver acá, es para leer, construir y correr.
    curl http://localhost:8080/
    podman stop hello-api-test
    ```
+   El hostname que devuelve la respuesta (`Environment.MachineName` en
+   .NET) es el del propio contenedor, no el de tu workspace: local, va a
+   verse como un ID de contenedor (`85340440a316`); más adelante, cuando
+   la despliegues en OpenShift, va a coincidir exactamente con el nombre
+   del Pod que ves en `oc get pods`. Guarda este dato: sirve para
+   confirmar en el paso 3 que estás pegándole al Pod real, no a una copia
+   en caché.
 
 2. **Leer y construir la versión multi-stage** (`hello-api/Dockerfile`):
 
@@ -194,11 +201,15 @@ resolver acá, es para leer, construir y correr.
    oc apply -f manifests/service.yaml -f manifests/route.yaml
 
    curl "https://$(oc get route hello-api -o jsonpath='{.spec.host}')/"
+   oc get pods -l app=hello-api
    ```
 
-   Si ves `Hola desde un contenedor en OpenShift!`, esa es tu primera
-   victoria del workshop: contenerizaste, publicaste y desplegaste algo de
-   punta a punta, sin ningún error en el medio. Vuelve a esta parte si algo de
+   Si ves `Hola, corro dentro de un contenedor .NET con hostname ...`, esa
+   es tu primera victoria del workshop: contenerizaste, publicaste y
+   desplegaste algo de punta a punta, sin ningún error en el medio.
+   Confirma además que el hostname de la respuesta coincide exactamente
+   con el nombre del Pod que te devolvió `oc get pods`: es la misma
+   máquina lógica, no una coincidencia. Vuelve a esta parte si algo de
    TaskFlow (Parte B) no funciona, para aislar si el problema es de
    mecánica (que ya probaste que domina) o específico de TaskFlow.
 
